@@ -9,6 +9,7 @@ type InputBarProps = {
     focused: boolean;
     setFocused: (f: boolean) => void;
     firstMessageSent: boolean;
+    isNewConversation: boolean;
 };
 
 export default function InputBar({
@@ -18,19 +19,20 @@ export default function InputBar({
     focused,
     setFocused,
     firstMessageSent,
+    isNewConversation,
 }: InputBarProps) {
     return (
         <motion.div
             initial={false}
             animate={
-                firstMessageSent
-                    ? { bottom: 24, top: "auto", translateY: "0%" }
-                    : { top: "50%", bottom: "auto", translateY: "-50%" }
+                isNewConversation && !firstMessageSent
+                    ? { y: "calc(50vh - 50%)" } // centrado
+                    : { y: "calc(98vh - 24px - 100%)" } // pegado abajo (depende de altura)
             }
             transition={{ duration: 0.56, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute w-full flex flex-col items-center pointer-events-none px-4 lg:px-0"
+            className="absolute left-1/2 -translate-x-1/2 w-full max-w-4xl flex flex-col items-center pointer-events-none px-4 lg:px-0"
         >
-            {!firstMessageSent && (
+            {isNewConversation && !firstMessageSent && (
                 <motion.h2
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
