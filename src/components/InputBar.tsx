@@ -9,7 +9,6 @@ type InputBarProps = {
     sendMessage: () => void;
     firstMessageSent: boolean;
     isNewConversation: boolean;
-    windowHeight: number;
     sidebarOpen: boolean;
     SIDEBAR_OPEN_PX: number;
     SIDEBAR_CLOSED_PX: number;
@@ -21,7 +20,6 @@ export default function InputBar({
     sendMessage,
     firstMessageSent,
     isNewConversation,
-    windowHeight,
     sidebarOpen,
     SIDEBAR_OPEN_PX,
     SIDEBAR_CLOSED_PX,

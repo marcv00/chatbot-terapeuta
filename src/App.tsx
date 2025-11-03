@@ -104,7 +104,6 @@ export default function App() {
                     sendMessage={sendMessage}
                     firstMessageSent={firstMessageSent}
                     isNewConversation={isNewConversation}
-                    windowHeight={windowHeight}
                     sidebarOpen={sidebarOpen}
                     SIDEBAR_OPEN_PX={SIDEBAR_OPEN_PX}
                     SIDEBAR_CLOSED_PX={SIDEBAR_CLOSED_PX}
