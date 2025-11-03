@@ -37,27 +37,6 @@ export default function App() {
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
-    const [windowHeight, setWindowHeight] = useState(
-        window.visualViewport?.height || window.innerHeight
-    );
-
-    useEffect(() => {
-        const handleResize = () => {
-            const vh = window.visualViewport?.height || window.innerHeight;
-            setWindowHeight(vh);
-        };
-
-        // Detecta cambios por teclado virtual
-        window.visualViewport?.addEventListener("resize", handleResize);
-        // Detecta cambios normales (rotación, etc.)
-        window.addEventListener("resize", handleResize);
-
-        return () => {
-            window.visualViewport?.removeEventListener("resize", handleResize);
-            window.removeEventListener("resize", handleResize);
-        };
-    }, []);
-
     // Get active conversation title
     const activeTitle =
         conversations.find((c) => c.id === activeConversationId)?.title ||
