@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import TextareaAutosize from "react-textarea-autosize";
 import { Send } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 type InputBarProps = {
     input: string;
@@ -10,6 +10,9 @@ type InputBarProps = {
     firstMessageSent: boolean;
     isNewConversation: boolean;
     windowHeight: number;
+    sidebarOpen: boolean;
+    SIDEBAR_OPEN_PX: number;
+    SIDEBAR_CLOSED_PX: number;
 };
 
 export default function InputBar({
@@ -19,27 +22,82 @@ export default function InputBar({
     firstMessageSent,
     isNewConversation,
     windowHeight,
+    sidebarOpen,
+    SIDEBAR_OPEN_PX,
+    SIDEBAR_CLOSED_PX,
 }: InputBarProps) {
     const [focused, setFocused] = useState(false);
-    const inputBarHeight = 64; // approximate height of the input + padding
+    const [keyboardOffset, setKeyboardOffset] = useState(0);
+    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+
+    // Detect keyboard and resize
+    useEffect(() => {
+        let timeout: any;
+
+        const handleResize = () => {
+            clearTimeout(timeout);
+            timeout = setTimeout(() => {
+                if (window.visualViewport) {
+                    const offset =
+                        window.innerHeight - window.visualViewport.height;
+                    setKeyboardOffset(offset > 0 ? offset + 8 : 0);
+                }
+            }, 80);
+        };
+
+        if (window.visualViewport)
+            window.visualViewport.addEventListener("resize", handleResize);
+
+        const handleWidth = () => setIsMobile(window.innerWidth < 768);
+        window.addEventListener("resize", handleWidth);
+
+        return () => {
+            if (window.visualViewport)
+                window.visualViewport.removeEventListener(
+                    "resize",
+                    handleResize
+                );
+            window.removeEventListener("resize", handleWidth);
+            clearTimeout(timeout);
+        };
+    }, []);
+
+    const shouldCenter = isNewConversation && !firstMessageSent;
+    const offset = isMobile
+        ? 0
+        : sidebarOpen
+        ? SIDEBAR_OPEN_PX
+        : SIDEBAR_CLOSED_PX;
 
     return (
         <motion.div
             initial={false}
             animate={
-                isNewConversation && !firstMessageSent
-                    ? { y: windowHeight / 2 - inputBarHeight / 2 } // center
-                    : { y: windowHeight - inputBarHeight - 24 } // stick above bottom
+                shouldCenter
+                    ? {
+                          top: "50%",
+                          left: `calc(${offset}px + 50% - ${offset / 2}px)`,
+                          x: "-50%",
+                          y: "-50%",
+                          bottom: "auto",
+                      }
+                    : {
+                          top: "auto",
+                          left: `calc(${offset}px + 50% - ${offset / 2}px)`,
+                          x: "-50%",
+                          y: 0,
+                          bottom: keyboardOffset > 0 ? keyboardOffset + 8 : 24,
+                      }
             }
-            transition={{ duration: 0.56, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute left-1/2 -translate-x-1/2 w-full max-w-4xl flex flex-col items-center pointer-events-none px-4 lg:px-0"
+            transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
+            className="fixed w-full max-w-4xl flex flex-col items-center px-4 lg:px-0"
         >
-            {isNewConversation && !firstMessageSent && (
+            {shouldCenter && (
                 <motion.h2
                     initial={{ opacity: 0, y: 8 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.4 }}
-                    className="md:text-3xl text-2xl text-center font-semibold text-emerald-800 mb-8 pointer-events-auto"
+                    className="md:text-3xl text-2xl text-center font-semibold text-emerald-800 mb-8"
                 >
                     ¿En qué estás pensando? 🌱
                 </motion.h2>
@@ -52,7 +110,7 @@ export default function InputBar({
                         : "0px 0px 6px rgba(0,0,0,0.08)",
                 }}
                 transition={{ duration: 0.3 }}
-                className="pointer-events-auto flex items-center gap-2 px-4 py-2 rounded-3xl bg-white/70 backdrop-blur-xl border border-emerald-300 shadow-lg w-full max-w-4xl"
+                className="flex items-center gap-2 px-4 py-2 rounded-3xl bg-white/70 backdrop-blur-xl border border-emerald-300 shadow-lg w-full max-w-4xl"
             >
                 <TextareaAutosize
                     minRows={1}

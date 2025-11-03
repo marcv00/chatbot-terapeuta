@@ -8,4 +8,9 @@ export default defineConfig({
     react(),
     tailwindcss()
   ],
+  // #Important: Comment the server host and port configuration before deploying to production
+  server: {
+    host: true,
+    port: 5173
+  }
 })

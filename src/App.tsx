@@ -37,16 +37,34 @@ export default function App() {
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
-    const [windowHeight, setWindowHeight] = useState(window.innerHeight);
+    const [windowHeight, setWindowHeight] = useState(
+        window.visualViewport?.height || window.innerHeight
+    );
 
     useEffect(() => {
-        const handleResize = () => setWindowHeight(window.innerHeight);
+        const handleResize = () => {
+            const vh = window.visualViewport?.height || window.innerHeight;
+            setWindowHeight(vh);
+        };
+
+        // Detecta cambios por teclado virtual
+        window.visualViewport?.addEventListener("resize", handleResize);
+        // Detecta cambios normales (rotación, etc.)
         window.addEventListener("resize", handleResize);
-        return () => window.removeEventListener("resize", handleResize);
+
+        return () => {
+            window.visualViewport?.removeEventListener("resize", handleResize);
+            window.removeEventListener("resize", handleResize);
+        };
     }, []);
 
+    // Get active conversation title
+    const activeTitle =
+        conversations.find((c) => c.id === activeConversationId)?.title ||
+        "Nueva conversación";
+
     return (
-        <div className="flex h-screen bg-gradient-to-br from-emerald-100 via-white to-sky-100 text-gray-800">
+        <div className="flex h-dvh bg-gradient-to-br from-emerald-100 via-white to-sky-100 text-gray-800">
             <Sidebar
                 isOpen={sidebarOpen}
                 isMobile={isMobile}
@@ -77,6 +95,7 @@ export default function App() {
                 <ChatHeader
                     isMobile={isMobile}
                     onOpenSidebar={() => setSidebarOpen(true)}
+                    activeTitle={activeTitle}
                 />
                 <MessagesList messages={messages} />
                 <InputBar
@@ -86,6 +105,9 @@ export default function App() {
                     firstMessageSent={firstMessageSent}
                     isNewConversation={isNewConversation}
                     windowHeight={windowHeight}
+                    sidebarOpen={sidebarOpen}
+                    SIDEBAR_OPEN_PX={SIDEBAR_OPEN_PX}
+                    SIDEBAR_CLOSED_PX={SIDEBAR_CLOSED_PX}
                 />
             </motion.div>
         </div>

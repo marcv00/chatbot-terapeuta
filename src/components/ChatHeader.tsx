@@ -3,11 +3,13 @@ import { MessageSquare } from "lucide-react";
 type ChatHeaderProps = {
     isMobile: boolean;
     onOpenSidebar: () => void;
+    activeTitle: string; // 👈 nueva prop
 };
 
 export default function ChatHeader({
     isMobile,
     onOpenSidebar,
+    activeTitle,
 }: ChatHeaderProps) {
     return (
         <header className="absolute top-0 md:h-[50px] h-[60px] w-full flex items-center justify-between md:py-8 p-4 bg-white/20 backdrop-blur-md border-b border-emerald-200 z-10">
@@ -21,7 +23,7 @@ export default function ChatHeader({
                 </button>
             )}
             <h1 className="hidden md:block absolute left-1/2 -translate-x-1/2 text-lg font-bold tracking-wide text-emerald-800">
-                Nueva Conversacion
+                {activeTitle || "Nueva Conversacion"}
             </h1>
         </header>
     );
