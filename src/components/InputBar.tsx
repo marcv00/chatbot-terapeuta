@@ -1,33 +1,35 @@
 import { motion } from "framer-motion";
 import TextareaAutosize from "react-textarea-autosize";
 import { Send } from "lucide-react";
+import { useState } from "react";
 
 type InputBarProps = {
     input: string;
     setInput: (val: string) => void;
     sendMessage: () => void;
-    focused: boolean;
-    setFocused: (f: boolean) => void;
     firstMessageSent: boolean;
     isNewConversation: boolean;
+    windowHeight: number;
 };
 
 export default function InputBar({
     input,
     setInput,
     sendMessage,
-    focused,
-    setFocused,
     firstMessageSent,
     isNewConversation,
+    windowHeight,
 }: InputBarProps) {
+    const [focused, setFocused] = useState(false);
+    const inputBarHeight = 64; // approximate height of the input + padding
+
     return (
         <motion.div
             initial={false}
             animate={
                 isNewConversation && !firstMessageSent
-                    ? { y: "calc(50vh - 50%)" } // centrado
-                    : { y: "calc(98vh - 24px - 100%)" } // pegado abajo (depende de altura)
+                    ? { y: windowHeight / 2 - inputBarHeight / 2 } // center
+                    : { y: windowHeight - inputBarHeight - 24 } // stick above bottom
             }
             transition={{ duration: 0.56, ease: [0.22, 1, 0.36, 1] }}
             className="absolute left-1/2 -translate-x-1/2 w-full max-w-4xl flex flex-col items-center pointer-events-none px-4 lg:px-0"

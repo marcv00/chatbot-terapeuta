@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 export type MessageBubbleProps = {
     from: "user" | "bot";
     text: string;
+    isTyping?: boolean; // new flag for typing animation
 };
 
 export default function MessageBubble({ from, text }: MessageBubbleProps) {

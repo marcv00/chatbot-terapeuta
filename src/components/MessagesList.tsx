@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import MessageBubble from "./MessageBubble";
 import type { MessageBubbleProps } from "./MessageBubble";
+import TypingBubble from "./TypingBubble";
 
 type MessagesListProps = {
     messages: MessageBubbleProps[];
@@ -43,7 +44,11 @@ export default function MessagesList({ messages }: MessagesListProps) {
                         key={i}
                         ref={i === targetIndex ? lastUserMsgRef : null}
                     >
-                        <MessageBubble from={msg.from} text={msg.text} />
+                        {msg.isTyping ? (
+                            <TypingBubble />
+                        ) : (
+                            <MessageBubble from={msg.from} text={msg.text} />
+                        )}
                     </div>
                 ))}
             </div>

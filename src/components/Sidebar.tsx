@@ -123,7 +123,7 @@ export default function Sidebar({
                                         : "bg-emerald-50 hover:bg-emerald-100 border-emerald-200"
                                 }`}
                             >
-                                <p className="text-sm font-medium text-emerald-800">
+                                <p className="text-sm font-medium text-emerald-800 relative overflow-hidden whitespace-nowrap pr-6">
                                     {conv.title}
                                 </p>
                                 <p className="text-xs text-emerald-600 mt-1">
